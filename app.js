@@ -65,7 +65,7 @@ app.route("/articles")
 
 // request targeting specific  articles
 
-app.route("/articles:titleOne")
+app.route("/articles/:titleOne")
 .get(function(req, res){
     Article.findOne({title: req.params.titleOne}, function(err, foundArticle){
         if(!err){
@@ -75,8 +75,47 @@ app.route("/articles:titleOne")
         }
 
     });
+})
+.put(function(req, res){
+    Article.updateOne(
+        {title: req.params.titleOne},
+        {title: req.body.title, content: req.body.content},
+        {overwrite: true},
+        function(err){
+            if(!err){
+                res.send("updated successfully")
+            }else{
+                res.send("not added")
+            }
+        })
+        
+})
+.patch(function(req, res){
+    Article.updateOne(
+        {title: req.params.titleOne},
+        {$set: req.body},
+        function(err){
+            if(!err){
+                res.send("updated successfully")
+            }else{
+                res.send("not updated")
+            }
+        }
 
-});
+    )
+})
+.delete(function(req, res){
+    Article.deleteOne(
+        {title: req.params.titleOne},
+        function(err){
+            if(!err){
+                res.send("deleted successfully")
+            }else{
+                res.send("not deleted")
+            }
+        }
+    )
+})
 
 
 app.listen(3000, function(){
